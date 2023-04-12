@@ -3,8 +3,10 @@
 namespace App\Http\Livewire;
 
 use App\Models\Link;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Illuminate\Support\Str;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ShortLink extends Component
 {
@@ -17,6 +19,35 @@ class ShortLink extends Component
     protected $listeners = [
         'linkAdded' => 'linkAdded'
     ];
+
+    public function getVisitsProperty()
+    {
+        if ($this->currentLink) {
+        
+            return $this->currentLink->visits->groupBy('country')->map(function ($item){
+                return $item->count();
+            });
+            
+        }
+
+        return null;
+    }
+
+    public function getLabelsProperty(){
+        if ($this->visits) {
+            return $this->visits->keys();
+        }
+
+        return [];
+    }
+
+    public function getDataProperty(){
+        if ($this->visits) {
+            return $this->visits->values();
+        }
+
+        return [];
+    }
 
     public function mount(){
         $this->getLinks();
@@ -95,8 +126,18 @@ class ShortLink extends Component
         }
     }
 
+    public function downloadQr(){
+        $qrCode = QrCode::size(500)->generate(route('shortlink', $this->currentLink));
+
+        Storage::disk('public')->put('qrCode/'.$this->currentLink->slug.'.svg', $qrCode);
+
+        return Storage::disk('public')->download('qrCode/'.$this->currentLink->slug.'.svg');
+    }
+
     public function render()
     {
+        $this->emit('renderChart', $this->labels, $this->data);
+
         return view('livewire.short-link');
     }
 }

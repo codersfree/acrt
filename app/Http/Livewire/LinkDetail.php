@@ -9,14 +9,14 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class LinkDetail extends Component
 {
-    public $link;
+    public $currentLink;
 
     public function downloadQr(){
-        $qrCode = QrCode::size(500)->generate(route('shortlink', $this->link));
+        $qrCode = QrCode::size(500)->generate(route('shortlink', $this->currentLink));
 
-        Storage::disk('public')->put('qrCode/'.$this->link->slug.'.svg', $qrCode);
+        Storage::disk('public')->put('qrCode/'.$this->currentLink->slug.'.svg', $qrCode);
 
-        return Storage::disk('public')->download('qrCode/'.$this->link->slug.'.svg');
+        return Storage::disk('public')->download('qrCode/'.$this->currentLink->slug.'.svg');
     }
 
     public function render()

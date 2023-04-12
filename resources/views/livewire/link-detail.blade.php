@@ -3,12 +3,12 @@
     <div class="bg-white p-6 shadow-lg rounded-lg mb-8">
 
         <h2 class="text-xl font-semibold mb-2">
-            {{$link->title}}
+            {{$currentLink->title}}
         </h2>
 
         <p>
             <i class="fa-regular fa-calendar mr-1"></i>
-            {{$link->created_at->format('F d, Y h:i A')}}
+            {{$currentLink->created_at->format('F d, Y h:i A')}}
         </p>
 
     </div>
@@ -43,18 +43,18 @@
 
             <div>
                 <h2 class="text-lg font-semibold text-blue-600" x-ref="enlace">
-                    {{ route('shortlink', $link) }}
+                    {{ route('shortlink', $currentLink) }}
                 </h2>
 
                 <p>
-                    {{$link->visits->count()}} visitas
+                    {{$currentLink->visits->count()}} visitas
                 </p>
 
-                <a href="{{ route('shortlink', $link) }}" 
+                <a href="{{ route('shortlink', $currentLink) }}" 
                     class="inline-flex items-center"
                     target="__blank">
                     <i class="fa-solid fa-turn-up rotate-90 mr-2"></i>
-                    {{ route('shortlink', $link) }}
+                    {{ route('shortlink', $currentLink) }}
                 </a>
             </div>
 
@@ -77,7 +77,7 @@
             </h2>
 
             <div class="flex">
-                {!! QrCode::size(100)->generate(route('shortlink', $link)) !!}
+                {!! QrCode::size(100)->generate(route('shortlink', $currentLink)) !!}
 
                 <x-button class="ml-4" wire:click="downloadQr()">
                     <i class="fa-solid fa-download mr-2"></i>
